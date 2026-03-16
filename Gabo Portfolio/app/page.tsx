@@ -19,7 +19,6 @@ export default function Home() {
   const { theme, setTheme } = useTheme()
 
   const roles = identities.map((identity) => identity.role)
-
   const selectedIdentity = selectedRole ? identities.find((i) => i.role === selectedRole) : null
 
   const handleRoleSelect = (role: string) => {
@@ -32,11 +31,10 @@ export default function Home() {
     setShowMenu(true)
   }
 
-  // Set initialLoad to false after animation completes
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoad(false)
-    }, 3000) // Give enough time for the animation to complete
+    }, 3000)
 
     return () => clearTimeout(timer)
   }, [])
@@ -59,7 +57,7 @@ export default function Home() {
       </div>
 
       <div className="absolute top-1/4 left-0 w-full px-6 md:px-24 lg:px-32">
-        {/* Main heading that stays fixed */}
+        {/* Main heading */}
         <div>
           {initialLoad ? (
             <TypewriterText
@@ -78,45 +76,49 @@ export default function Home() {
               <p className="text-xl md:text-2xl m-0 flex items-baseline">
                 I&apos;ve been a{" "}
                 {selectedRole ? (
-                  <span
-                    className="underline decoration-2 underline-offset-4 cursor-pointer ml-1"
+                  <button
+                    className="underline decoration-2 underline-offset-4 cursor-pointer ml-1 bg-transparent border-none p-0 text-xl md:text-2xl font-[inherit] text-inherit"
                     onClick={resetSelection}
+                    aria-label={`Selected role: ${selectedRole}. Click to change.`}
                   >
                     {selectedRole}
-                  </span>
+                  </button>
                 ) : (
-                  <span
-                    className="inline-block w-64 border-b-2 border-dashed border-current cursor-pointer ml-1"
+                  <button
+                    className="inline-block w-64 border-b-2 border-dashed border-current cursor-pointer ml-1 bg-transparent border-t-0 border-l-0 border-r-0 text-left"
                     onMouseEnter={() => !isMobile && setShowMenu(true)}
-                    onClick={() => isMobile && setShowMenu(!showMenu)}
+                    onClick={() => setShowMenu(!showMenu)}
+                    aria-label="Select a role"
+                    aria-haspopup="listbox"
+                    aria-expanded={showMenu}
                   >
                     &nbsp;
-                  </span>
+                  </button>
                 )}
                 {selectedIdentity?.suffix || ""}
               </p>
             )}
 
-            {/* Menu - fixed position on desktop, below on mobile */}
+            {/* Role menu */}
             {showMenu && !selectedRole && (
               <div
-                className={`
-                  ${isMobile ? "mt-2 self-center" : "md:ml-16"}
-                `}
+                className={`${isMobile ? "mt-2 self-center" : "md:ml-16"}`}
                 onMouseEnter={() => !isMobile && setShowMenu(true)}
                 onMouseLeave={() => !isMobile && setShowMenu(false)}
               >
-                <div className={`flex flex-col gap-2 ${isMobile ? "items-center" : ""}`}>
+                <div
+                  className={`flex flex-col gap-2 ${isMobile ? "items-center" : ""}`}
+                  role="listbox"
+                  aria-label="Select a role"
+                >
                   {roles.map((role, index) => (
                     <motion.button
                       key={role}
+                      role="option"
+                      aria-selected={false}
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.3,
-                        delay: index * 0.08,
-                        ease: "easeOut",
-                      }}
+                      transition={{ duration: 0.3, delay: index * 0.08, ease: "easeOut" }}
                       onClick={() => handleRoleSelect(role)}
                       className="px-6 py-2 border border-stone-300 dark:border-stone-700 text-left text-lg hover:border-stone-500 dark:hover:border-stone-400 bg-stone-50 dark:bg-stone-900 transition-colors w-64"
                     >
@@ -189,4 +191,3 @@ export default function Home() {
     </div>
   )
 }
-

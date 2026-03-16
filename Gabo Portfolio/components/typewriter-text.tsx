@@ -13,35 +13,28 @@ export default function TypewriterText({ text, className = "", onComplete }: Typ
   const [opacity, setOpacity] = useState(0)
   const animationRef = useRef<NodeJS.Timeout | null>(null)
   const isCompletedRef = useRef(false)
-  const hasAnimatedRef = useRef(false)
+  const onCompleteRef = useRef(onComplete)
+
+  // Always keep the ref current without triggering re-runs of the effect
+  onCompleteRef.current = onComplete
 
   useEffect(() => {
-    // Only run the animation once per component instance
-    if (hasAnimatedRef.current) return
-    hasAnimatedRef.current = true
-
-    // Reset state
     setDisplayedText("")
     setOpacity(0)
     isCompletedRef.current = false
 
-    // Calculate a speed that will complete the animation in ~1 second
-    const totalDuration = 800 // ms
+    const totalDuration = 800
     const charactersPerStep = Math.max(1, Math.ceil(text.length / (totalDuration / 50)))
-
     let currentIndex = 0
 
-    // Clear any existing animation
     if (animationRef.current) {
       clearInterval(animationRef.current)
     }
 
-    // Start new animation with a small delay to ensure clean start
-    const timer = setTimeout(() => {
+    const startTimer = setTimeout(() => {
       animationRef.current = setInterval(() => {
         currentIndex += charactersPerStep
 
-        // Gradually increase opacity as text appears
         const progress = Math.min(1, currentIndex / text.length)
         setOpacity(progress)
 
@@ -54,24 +47,24 @@ export default function TypewriterText({ text, className = "", onComplete }: Typ
             animationRef.current = null
           }
 
-          if (onComplete && !isCompletedRef.current) {
+          if (onCompleteRef.current && !isCompletedRef.current) {
             isCompletedRef.current = true
-            setTimeout(onComplete, 100) // Small delay before triggering next paragraph
+            setTimeout(onCompleteRef.current, 100)
           }
         } else {
           setDisplayedText(text.slice(0, currentIndex))
         }
-      }, 50) // Update every 50ms
+      }, 50)
     }, 100)
 
     return () => {
-      clearTimeout(timer)
+      clearTimeout(startTimer)
       if (animationRef.current) {
         clearInterval(animationRef.current)
         animationRef.current = null
       }
     }
-  }, []) // Empty dependency array - only run once on mount
+  }, [text])
 
   return (
     <div
@@ -85,4 +78,3 @@ export default function TypewriterText({ text, className = "", onComplete }: Typ
     </div>
   )
 }
-

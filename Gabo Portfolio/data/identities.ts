@@ -1,7 +1,8 @@
 export interface Identity {
   role: string
   description: string
-  suffix?: string // Optional text that appears after the role in the sentence
+  suffix?: string
+  engagements?: string[]
 }
 
 const identities: Identity[] = [
@@ -26,8 +27,16 @@ const identities: Identity[] = [
   {
     role: "educator on AI",
     description:
-      "I've always been very curious and jumped into all the technological fads (yes, even crypto). But never like in this moment. I truly believe this technology is changing us, and understanding is crucial for the sustainable growth of human potential. I've been educating and advocating for human-centered design and implementation of this technology in various forums as an educator and speaker.\n\nPrevious and Future Engagements:\nEl Salvador National Marketing Association\nUniversity of Puerto Rico Association of Advertising and Public Relations Association\nPodcast: Neptuno Networks\nInternational Women's Economic Forum\nPuerto Rico Next Tourism Summit\nRecurrent speaker at Chamber of Commerce SMB's forums\n\nContact me if you want to invite me to a speaking event.",
+      "I've always been very curious and jumped into all the technological fads (yes, even crypto). But never like in this moment. I truly believe this technology is changing us, and understanding is crucial for the sustainable growth of human potential. I've been educating and advocating for human-centered design and implementation of this technology in various forums as an educator and speaker.",
     suffix: ", because it's important.",
+    engagements: [
+      "El Salvador National Marketing Association",
+      "University of Puerto Rico Association of Advertising and Public Relations Association",
+      "Podcast: Neptuno Networks",
+      "International Women's Economic Forum",
+      "Puerto Rico Next Tourism Summit",
+      "Recurrent speaker at Chamber of Commerce SMB's forums",
+    ],
   },
   {
     role: "cook",
@@ -50,4 +59,3 @@ const identities: Identity[] = [
 ]
 
 export default identities
-
